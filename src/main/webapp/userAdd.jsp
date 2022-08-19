@@ -38,7 +38,7 @@
 </section>
 <!--主体内容-->
 <section class="publicMian">
-    <div class="left"></div>
+    <div class="left" style="height: 635px;"></div>
     <div class="right">
         <div class="location">
             <strong>你现在所在的位置是:</strong>
@@ -100,12 +100,12 @@
                     <input type="radio" name="r_id" value="2"/>普通管理员
 <%--                    <input type="radio" name="type"/>普通用户--%>
                 </div>
-                <strong style="position: relative;left: 200px;font-size: 15px">${add_msg}</strong>
-                <div class="providerAddBtn">
+                <strong style="position: relative;left: 200px;font-size: 14px">${add_msg}</strong>
+                <div class="providerAddBtn" style="position: relative;left: -50px;">
                     <!--<a href="#">保存</a>-->
                     <!--<a href="userList.jsp">返回</a>-->
                     <input type="submit" value="保存" onclick="history.back(-1)"/>
-                    <input type="button" value="返回" onclick="history.back(-1)"/>
+                    <a href="${pageContext.request.contextPath}/findUserByPageHandler">返回</a>
                 </div>
             </form>
         </div>

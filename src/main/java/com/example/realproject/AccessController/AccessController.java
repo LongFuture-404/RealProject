@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -83,6 +84,7 @@ public class AccessController {
     @ResponseBody
     @RequestMapping("/findUserByPageHandler")
     public ModelAndView findUserByPage(HttpServletRequest request){
+
         ModelAndView modelAndView=new ModelAndView();
         String currentPage=request.getParameter("currentPage");
         String rows=request.getParameter("rows");
@@ -112,7 +114,7 @@ public class AccessController {
             byte[] bytes = (byte[]) map.get("CONCAT(avatar)");
             response.setContentType("image/jpeg,image/png");//设置输出流内容格式为图片格式
             InputStream in1 = new ByteArrayInputStream(bytes);//将字节流转换为输入流
-            IOUtils.copy(in1, response.getOutputStream());//将字节从 InputStream复制到OutputStream中
+            IOUtils.copy(in1, response.getOutputStream());//将字节从InputStream复制到OutputStream中
         }
         String logoRealPathDir = request.getSession().getServletContext()
                 .getRealPath("/WEB-INF/ymp57g.png");//获取默认图片路径
@@ -124,9 +126,9 @@ public class AccessController {
 
     @ResponseBody
     @RequestMapping("/findUserHandler")
-    public ModelAndView findUser(@RequestParam(value = "phone")String account
-                                 ,@RequestParam(value = "for")Integer For
-                                    ,HttpServletRequest request){
+    public ModelAndView findUser(@RequestParam(value = "phone")String account,
+                                 @RequestParam(value = "for")Integer For,
+                                 HttpServletRequest request){
         ModelAndView modelAndView=new ModelAndView();
 
         Users users=usersservice.UsersSelect(account);

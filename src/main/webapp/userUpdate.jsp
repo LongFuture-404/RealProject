@@ -7,6 +7,13 @@
     <title> 静态资源后台管理系统</title>
     <link rel="stylesheet" href="css/public.css"/>
     <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="bootcss/bootstrap.min.css">
+    <script src="bootjs/bootstrap.min.js"></script>
+    <style>
+        *{
+            font-size: 10px;
+        }
+    </style>
 </head>
 <body>
 <!--头部-->
@@ -27,14 +34,14 @@
 </section>
 <!--主体内容-->
 <section class="publicMian ">
-    <div class="left"></div>
+    <div class="left" style="height: 635px;"></div>
     <div class="right">
         <div class="location">
             <strong>你现在所在的位置是:</strong>
             <span>用户管理页面 >> 用户修改页面</span>
         </div>
         <div class="providerAdd">
-            <form action="${pageContext.request.contextPath}/updateUsers.Handler" method="post">
+            <form action="${pageContext.request.contextPath}/updateUsers.Handler" method="post" enctype="multipart/form-data">
                 <!--div的class 为error是验证错误，ok是验证成功-->
                 <div>
                     <input type="hidden" name="uid" value="${users.uid}"/>
@@ -44,7 +51,11 @@
                     <input type="text" name="name" id="name" value="${users.name}"/>
                     <span >*</span>
                 </div>
-
+                <div>
+                    <label style="position:relative;width: 66px;left: 16%;box-shadow:1px 1px 1px #0a0a0a" class="btn btn-default" for="avatar">上传头像</label>
+                    <input type="file" name="avatar" id="avatar" style="display:none;"/>
+                    <img style="width: 100px;height: 58px;position: relative;left: 210px;" src="${pageContext.request.contextPath}/imageLoad?phone=${users.phone}">
+                </divs>
                 <div>
                     <label >用户性别：</label>
                     <select name="sex">

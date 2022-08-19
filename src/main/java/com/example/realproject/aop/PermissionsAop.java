@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service("permissionsAop")
 @Aspect
-@Order(2)
+@Order(1)
 public class PermissionsAop {
 
     @Pointcut("execution(* com.example.realproject.Controller.*.*(..))")
@@ -46,6 +46,7 @@ public class PermissionsAop {
                     for (permissions sonPri:pri.getPriList()){
                         if(requestURI.endsWith(sonPri.getP_url())){
                             flag=1;
+                            break;
                         }
                     }
                 }

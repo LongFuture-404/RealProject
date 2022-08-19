@@ -30,11 +30,12 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping("/updatePW.Handler")
-    public ModelAndView updatePWHandler(HttpServletRequest request, HttpServletResponse response){
+    public ModelAndView updatePWHandler(@RequestParam("password") String password,
+                                        @RequestParam("newPassword") String newPassword,
+                                        @RequestParam("reNewPassword") String reNewPassword,
+                                        HttpServletRequest request, HttpServletResponse response){
 
         ModelAndView modelAndView=new ModelAndView();
-        String newPassword=request.getParameter("newPassword");
-        String reNewPassword=request.getParameter("reNewPassword");
 
         Map<String,String[]> map=request.getParameterMap();
         Map<String,Object> resultmap=new HashMap<>();
@@ -52,14 +53,18 @@ public class UserController {
         }
         if(users.getPassword().equals(selectUser.getPassword())){
             if (newPassword.equals(reNewPassword)) {
+                if(password.equals(newPassword)){
+                    request.getSession().setAttribute("updatePW_msg", "设置密码原密码相同");
+                }
+                else{
+                    resultmap.put("phone", users.getPhone());
+                    resultmap.put("result", 1);
+                    usersservice.UsersAddResult(resultmap);
 
-                resultmap.put("phone",users.getPhone());
-                resultmap.put("result",1);
-                usersservice.UsersAddResult(resultmap);
-
-                selectUser.setPassword(newPassword);
-                usersservice.UsersUpdatePW(selectUser);
-                request.getSession().setAttribute("updatePW_msg", "更改密码完成");
+                    selectUser.setPassword(newPassword);
+                    usersservice.UsersUpdatePW(selectUser);
+                    request.getSession().setAttribute("updatePW_msg", "更改密码完成");
+                }
             } else {
                 request.getSession().setAttribute("updatePW_msg", "两次密码不一致请重新输入");
             }
@@ -74,6 +79,7 @@ public class UserController {
     @RequestMapping("/UsersAdd.Handler")
     public ModelAndView UsersAddHandler(@RequestParam("userRemi") String userRemi,
                                         @RequestParam("password") String password,
+                                        @RequestParam("brithday") String brithday,
                                         @RequestParam("avatar") MultipartFile uploadfile,
                                         HttpServletRequest request) throws IOException {
         ModelAndView modelAndView=new ModelAndView();
@@ -92,21 +98,27 @@ public class UserController {
 
         Map<String,String[]> map=request.getParameterMap();
         if(userRemi.equals(password)) {
-            try {
-                DateConverter converter = new DateConverter();
-                converter.setPattern(new String("yyyy-MM-dd"));
-                ConvertUtils.register(converter, Date.class);
-                BeanUtils.populate(users, map);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
+            if(brithday.equals("")){
+                request.getSession().setAttribute("add_msg","请完成生日输入");
+                modelAndView.setViewName("redirect:/userAdd.jsp");
             }
-            usersservice.UsersInsert(users);
+            else {
+                try {
+                    DateConverter converter = new DateConverter();
+                    converter.setPattern(new String("yyyy-MM-dd"));
+                    ConvertUtils.register(converter, Date.class);
+                    BeanUtils.populate(users, map);
+                    usersservice.UsersInsert(users);
 
-            resultmap.put("phone",Mphone);
-            resultmap.put("result",1);
-            usersservice.UsersAddResult(resultmap);
-            request.getSession().setAttribute("add_msg","添加用户成功");
-            modelAndView.setViewName("redirect:/findUserByPageHandler");
+                    resultmap.put("phone",Mphone);
+                    resultmap.put("result",1);
+                    usersservice.UsersAddResult(resultmap);
+                    request.getSession().setAttribute("add_msg","添加用户成功");
+                    modelAndView.setViewName("redirect:/findUserByPageHandler");
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         else {
             request.getSession().setAttribute("add_msg","密码不一致，请重新输入");
@@ -114,7 +126,39 @@ public class UserController {
         }
         return modelAndView;
     }
+    @ResponseBody
+    @RequestMapping("/updateUsers.Handler")
+    public ModelAndView UpdateUsersHandler( @RequestParam("phone") String account,
+                                            @RequestParam("avatar") MultipartFile uploadfile,
+                                            HttpServletRequest request) throws IOException {
+        ModelAndView modelAndView=new ModelAndView();
 
+        Users users=new Users();
+        String avatar;
+        if(uploadfile.getSize()!=0){
+            String realpath = "F:\\MySQL\\ProgramData\\MySQL Server 8.0\\Uploads\\";
+            String fileName = uploadfile.getOriginalFilename();
+            File destFile = new File(realpath, fileName);
+            uploadfile.transferTo(destFile);
+            avatar = realpath + fileName;
+            users.setAvatar(avatar);
+        }
+        Map<String,String[]> map=request.getParameterMap();
+        try {
+            DateConverter converter = new DateConverter();
+            converter.setPattern(new String("yyyy-MM-dd"));
+            ConvertUtils.register(converter, Date.class);
+            BeanUtils.populate(users,map);
+            usersservice.UpdateUsers(users);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+
+        request.getSession().setAttribute("add_msg","修改用户成功");
+        modelAndView.setViewName("redirect:/findUserByPageHandler");
+
+        return modelAndView;
+    }
     @ResponseBody
     @RequestMapping("/delUsers.Handler")
     public ModelAndView DelUsersHandler( @RequestParam(value = "phone") String account
@@ -126,29 +170,5 @@ public class UserController {
             modelAndView.setViewName("redirect:/findUserByPageHandler");
 
             return modelAndView;
-    }
-
-    @ResponseBody
-    @RequestMapping("/updateUsers.Handler")
-    public ModelAndView UpdateUsersHandler( @RequestParam(value = "phone") String account
-                                            ,HttpServletRequest request){
-        ModelAndView modelAndView=new ModelAndView();
-
-        Map<String,String[]> map=request.getParameterMap();
-
-        Users users=new Users();
-        try {
-            DateConverter converter = new DateConverter();
-            converter.setPattern(new String("yyyy-MM-dd"));
-            ConvertUtils.register(converter, Date.class);
-            BeanUtils.populate(users,map);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-        usersservice.UpdateUsers(users);
-        request.getSession().setAttribute("add_msg","修改用户成功");
-        modelAndView.setViewName("redirect:/findUserByPageHandler");
-
-        return modelAndView;
     }
 }

@@ -87,7 +87,7 @@
     </section>
 <!--主体内容-->
     <section class="publicMian" style="display: flex; flex-direction: column">
-        <div style="height: 630px;" class="left"></div>
+        <div style="height: 635px;" class="left"></div>
         <div class="right" style="position: absolute; left: 168px; top: 80px;">
             <div class="location">
                 <strong>你现在所在的位置是:</strong>

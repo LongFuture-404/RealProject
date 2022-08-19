@@ -1,6 +1,6 @@
 package com.example.realproject.service.Impl;
 
-import com.example.realproject.Selectpage.UserSelectPage;
+//import com.example.realproject.Selectpage.UserSelectPage;
 import com.example.realproject.dao.PriDao;
 import com.example.realproject.dao.UsersDao;
 import com.example.realproject.entity.PageBean;
@@ -10,6 +10,7 @@ import com.example.realproject.service.UsersService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +23,8 @@ public class UsersServiceImpl implements UsersService {
     @Resource(name = "priDao")
     PriDao pridao;
 
-    @Resource(name = "userSelectPage")
-    UserSelectPage userSelectPage;
+//    @Resource(name = "userSelectPage")
+//    UserSelectPage userSelectPage;
 
     @Override
     public Users UsersSelect(String phone){
@@ -88,7 +89,6 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public PageBean<Users> findUserByPage(String _currentPage, String _rows, Map<String, String[]> condition) {
-
         int currentPage=Integer.parseInt(_currentPage);
         int rows=Integer.parseInt(_rows);
 
@@ -99,10 +99,19 @@ public class UsersServiceImpl implements UsersService {
         pb.setCurrentPage(currentPage);
         pb.setRows(rows);
 
-        int totalCount=userSelectPage.findTotalCount(condition);
+        //将Map<String, String[]>的StringBuilder转换为Map<String, Object>的String类型
+        Map<String, Object> map=new HashMap<>();
+        //将String[]类型转换为String类型
+        String temp= Arrays.toString(condition.get("name"));
+        //去除String中的[]
+        String name=temp.substring(1,temp.length()-1);
+        map.put("name",name);
+
+        int totalCount=userdao.findTotalCount(map);
         pb.setTotalCount(totalCount);
         int start=(currentPage-1)*rows;
-        List<Users> list=userSelectPage.findByPage(start,rows,condition);
+
+        List<Users> list=userdao.findByPage(start,rows,map);
         pb.setList(list);
 
         int totalPage=(totalCount % rows) ==0 ? totalCount/rows : totalCount/rows+1;

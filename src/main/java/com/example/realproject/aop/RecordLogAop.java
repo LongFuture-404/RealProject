@@ -22,7 +22,7 @@ import java.util.Date;
  */
 @Service("recordLogAop")
 @Aspect
-@Order(1)
+@Order(2)
 public class RecordLogAop {
 
     @Resource(name = "logServiceImpl")
@@ -64,7 +64,9 @@ public class RecordLogAop {
         }
         //获取用户信息
         String phone;
-        if(requestURI.contains(".Handler")){
+        //如果记录删除的用户信息则添加以下条件
+        //||requestURI.endsWith("delUsers.Handler")
+        if(requestURI.endsWith("login.Handler")||requestURI.endsWith("delUsers.Handler")){
                 phone=request.getParameter("phone");
         }else{
             Object userInfo = request.getSession().getAttribute("userinfo") ;

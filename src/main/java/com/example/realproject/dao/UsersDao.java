@@ -35,4 +35,6 @@ public interface UsersDao {
     void DeleteU(String phone);
 
     void UpdateU(Users users);
+    int findTotalCount(@Param("map")Map<String, Object> map);
+    List<Users> findByPage(@Param("start")int start,@Param("rows")int rows,@Param("map")Map<String, Object> map);
 }

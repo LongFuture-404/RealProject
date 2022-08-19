@@ -19,7 +19,7 @@
         }
         .providerView{
 
-            width: 1200px;
+            width: 1300px;
             position: relative;
             display: flex;
             flex-direction:row;
@@ -73,6 +73,9 @@
         <div class="providerView">
             <p><strong>用户编号：</strong><span>${users.uid}</span></p>
             <p><strong>用户名称：</strong><span>${users.name}</span></p>
+            <p><strong>头像：</strong><span>
+                <img style="width: 150px;height: 100px;position: relative;left: -30px;top: -10px" src="${pageContext.request.contextPath}/imageLoad?phone=${users.phone}">
+            </span></p>
             <p><strong>用户性别：</strong>
                 <span>
                 <c:if test="${users.sex==1}">男</c:if>

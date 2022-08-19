@@ -60,8 +60,29 @@
         delete from users where phone=#{phone}</delete>
 
     <update id="UpdateU" parameterType="com.example.realproject.entity.Users">
-        update users set name=#{name},sex=#{sex},brithday=#{brithday},
-        phone=#{phone},address=#{address},R_id=#{r_id},state=#{state} where uid=#{uid}</update>
+        update users set name=#{name},
+        <if test="avatar != null">
+                avatar=LOAD_FILE(#{avatar}),
+        </if>
+        sex=#{sex},brithday=#{brithday},phone=#{phone},address=#{address},
+        R_id=#{r_id},state=#{state} where uid=#{uid}</update>
 
+    <select id="findTotalCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*) from users <where>
+        <if test="map != null and map.name != 'ul' ">
+            <if test="map.name != null and map.name != '' ">
+                name like CONCAT(CONCAT('%',#{map.name}),'%')
+            </if>
+        </if>
+        </where></select>
+
+    <select id="findByPage" parameterType="java.util.Map" resultType="com.example.realproject.entity.Users">
+        select * from users <where>
+            <if test="map != null and map.name != 'ul' ">
+                <if test="map.name != null and map.name != '' ">
+                    name like CONCAT(CONCAT('%',#{map.name}),'%')
+                </if>
+            </if>
+        </where>limit #{start},#{rows}</select>
 </mapper>
 
