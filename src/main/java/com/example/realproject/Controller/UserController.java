@@ -3,6 +3,7 @@ package com.example.realproject.Controller;
 import com.example.realproject.entity.Users;
 import com.example.realproject.service.UsersService;
 import org.apache.commons.beanutils.BeanUtils;
+//import org.springframework.beans.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.springframework.stereotype.Controller;
@@ -30,9 +31,9 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping("/updatePW.Handler")
-    public ModelAndView updatePWHandler(@RequestParam("password") String password,
-                                        @RequestParam("newPassword") String newPassword,
-                                        @RequestParam("reNewPassword") String reNewPassword,
+    public ModelAndView updatePWHandler(@RequestParam(name = "password",required = false) String password,
+                                        @RequestParam(name = "newPassword",required = false) String newPassword,
+                                        @RequestParam(name = "reNewPassword",required = false) String reNewPassword,
                                         HttpServletRequest request, HttpServletResponse response){
 
         ModelAndView modelAndView=new ModelAndView();
@@ -77,11 +78,11 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping("/UsersAdd.Handler")
-    public ModelAndView UsersAddHandler(@RequestParam("userRemi") String userRemi,
-                                        @RequestParam("password") String password,
-                                        @RequestParam("brithday") String brithday,
-                                        @RequestParam("avatar") MultipartFile uploadfile,
-                                        HttpServletRequest request) throws IOException {
+    public ModelAndView UsersAddHandler(@RequestParam(name = "userRemi",required = false) String userRemi,
+                                        @RequestParam(name = "password",required = false) String password,
+                                        @RequestParam(name = "brithday",required = false) String brithday,
+                                        @RequestParam(name = "avatar",required = false) MultipartFile uploadfile,
+                                        HttpServletRequest request) throws IOException, InvocationTargetException, IllegalAccessException {
         ModelAndView modelAndView=new ModelAndView();
         Map<String,Object> resultmap=new HashMap<>();
         String Mphone=request.getParameter("Mphone");
@@ -97,22 +98,28 @@ public class UserController {
         }
 
         Map<String,String[]> map=request.getParameterMap();
+        DateConverter converter = new DateConverter();
+        converter.setPattern(new String("yyyy-MM-dd"));
+        ConvertUtils.register(converter, Date.class);
         if(userRemi.equals(password)) {
             if(brithday.equals("")){
+                ConvertUtils.register(new DateConverter(null), Date.class);
+                BeanUtils.populate(users, map);
+                request.getSession().setAttribute("userRemi",userRemi);
+                request.getSession().setAttribute("usersA",users);
                 request.getSession().setAttribute("add_msg","请完成生日输入");
                 modelAndView.setViewName("redirect:/userAdd.jsp");
             }
             else {
                 try {
-                    DateConverter converter = new DateConverter();
-                    converter.setPattern(new String("yyyy-MM-dd"));
-                    ConvertUtils.register(converter, Date.class);
                     BeanUtils.populate(users, map);
                     usersservice.UsersInsert(users);
 
                     resultmap.put("phone",Mphone);
                     resultmap.put("result",1);
                     usersservice.UsersAddResult(resultmap);
+                    request.getSession().setAttribute("userRemi",null);
+                    request.getSession().setAttribute("usersA",null);
                     request.getSession().setAttribute("add_msg","添加用户成功");
                     modelAndView.setViewName("redirect:/findUserByPageHandler");
                 } catch (IllegalAccessException | InvocationTargetException e) {
@@ -121,6 +128,8 @@ public class UserController {
             }
         }
         else {
+            BeanUtils.populate(users, map);
+            request.getSession().setAttribute("usersA",users);
             request.getSession().setAttribute("add_msg","密码不一致，请重新输入");
             modelAndView.setViewName("redirect:/userAdd.jsp");
         }
@@ -128,8 +137,7 @@ public class UserController {
     }
     @ResponseBody
     @RequestMapping("/updateUsers.Handler")
-    public ModelAndView UpdateUsersHandler( @RequestParam("phone") String account,
-                                            @RequestParam("avatar") MultipartFile uploadfile,
+    public ModelAndView UpdateUsersHandler(@RequestParam(name = "avatar",required = false) MultipartFile uploadfile,
                                             HttpServletRequest request) throws IOException {
         ModelAndView modelAndView=new ModelAndView();
 
@@ -161,7 +169,7 @@ public class UserController {
     }
     @ResponseBody
     @RequestMapping("/delUsers.Handler")
-    public ModelAndView DelUsersHandler( @RequestParam(value = "phone") String account
+    public ModelAndView DelUsersHandler( @RequestParam(value = "phone",required = false) String account
                                         ,HttpServletRequest request){
             ModelAndView modelAndView=new ModelAndView();
 

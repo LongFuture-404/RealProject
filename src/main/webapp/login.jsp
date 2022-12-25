@@ -38,12 +38,12 @@
                         <div class="input-group password"> <span class="input-group-addon"><i class="icon-lock"></i></span>
                             <input type="password" name="password" class="form-control" placeholder="请输入密码">
                         </div>
-                        <div>
-                            <input style="width: 200px" type="text" name="verifyCode" class="form-control" placeholder="请输入密码">
-                            <a href="javascript:refreshCode();">
-                                <img src="${pageContext.request.contextPath}/checkCode" title="看不清，请点击刷新"  id="vcode">
-                            </a>
-                        </div>
+<%--                        <div>--%>
+<%--                            <input style="width: 200px" type="text" name="verifyCode" class="form-control" placeholder="请输入验证码">--%>
+<%--                            <a href="javascript:refreshCode();">--%>
+<%--                                <img src="${pageContext.request.contextPath}/checkCode" title="看不清，请点击刷新"  id="vcode">--%>
+<%--                            </a>--%>
+<%--                        </div>--%>
                         <div class="right check_right">
                             <a href="/verify.jsp">忘记密码？</a>
                         </div>

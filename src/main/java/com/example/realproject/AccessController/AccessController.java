@@ -107,7 +107,7 @@ public class AccessController {
 
     @ResponseBody
     @RequestMapping("/imageLoad")
-    public void ImageLoad(@RequestParam("phone") String account,
+    public void ImageLoad(@RequestParam(name = "phone",required = false) String account,
                           HttpServletResponse response, HttpServletRequest request) throws IOException {
         Map map=usersservice.UsersGetImage(account);
         if (map != null && map.size() > 0) {
@@ -126,8 +126,8 @@ public class AccessController {
 
     @ResponseBody
     @RequestMapping("/findUserHandler")
-    public ModelAndView findUser(@RequestParam(value = "phone")String account,
-                                 @RequestParam(value = "for")Integer For,
+    public ModelAndView findUser(@RequestParam(value = "phone",required = false)String account,
+                                 @RequestParam(value = "for",required = false)Integer For,
                                  HttpServletRequest request){
         ModelAndView modelAndView=new ModelAndView();
 

@@ -50,12 +50,12 @@
                 <input type="hidden" name="Mphone"  value="${userinfo.phone}">
                 <div class="">
                     <label for="uid">用户编码：</label>
-                    <input type="text" name="uid" id="uid"/>
+                    <input type="text" name="uid" id="uid" value="${usersA.uid}"/>
                     <span>*请输入用户编码，且不能重复</span>
                 </div>
                 <div>
                     <label for="name">用户名称：</label>
-                    <input type="text" name="name" id="name"/>
+                    <input type="text" name="name" id="name" value="${usersA.name}"/>
                     <span >*请输入用户名称</span>
                 </div>
                 <div>
@@ -64,40 +64,65 @@
                 </div>
                 <div>
                     <label for="password">用户密码：</label>
-                    <input type="text" name="password" id="password"/>
+                    <input type="password" name="password" id="password" value="${usersA.password}"/>
                     <span>*密码长度必须大于6位小于20位</span>
                 </div>
                 <div>
                     <label for="userRemi">确认密码：</label>
-                    <input type="text" name="userRemi" id="userRemi"/>
+                    <input type="password" name="userRemi" id="userRemi" value="${userRemi}"/>
                     <span>*请输入确认密码</span>
                 </div>
                 <div>
                     <label >用户性别：</label>
                     <select name="sex">
-                        <option value="1">男</option>
-                        <option value="0">女</option>
+                        <c:if test="${usersA.sex==1}">
+                        <option value="1" selected>男</option>
+                        <option value="0" >女</option>
+                        </c:if>
+                        <c:if test="${usersA.sex==0}">
+                        <option value="1" >男</option>
+                        <option value="0" selected>女</option>女
+                        </c:if>
+                        <c:if test="${usersA.sex!=1 and usersA.sex!=0}">
+                        <option value="1" >男</option>
+                        <option value="0" >女</option>
+                        </c:if>
+                    <span>*</span>
                     </select>
-                    <span></span>
                 </div>
                 <div>
                     <label for="brithday">出生日期：</label>
-                    <input type="date" name="brithday" id="brithday"/>
-                    <span >*</span>
+                    <c:if test="${usersA.brithday!=null}">
+                        <input type="text" name="brithday" id="brithday" value="${usersA.normalBrithday}"/>
+                    </c:if>
+                    <c:if test="${usersA.brithday==null}">
+                        <input type="text" name="brithday" id="brithday"/>
+                    </c:if>
+                    <span>*</span>
                 </div>
                 <div>
                     <label for="phone">用户电话：</label>
-                    <input type="text" name="phone" id="phone"/>
+                    <input type="text" name="phone" id="phone" value="${usersA.phone}"/>
                     <span>*</span>
                 </div>
                 <div>
                     <label for="address">用户地址：</label>
-                    <input type="text" name="address" id="address"/>
+                    <input type="text" name="address" id="address" value="${usersA.address}"/>
                 </div>
                 <div>
                     <label >用户类别：</label>
-                    <input type="radio" name="r_id" value="1"/>超级管理员
-                    <input type="radio" name="r_id" value="2"/>普通管理员
+                    <c:if test="${usersA.r_id==1}">
+                        <input type="radio" name="r_id" value="1" checked/>超级管理员
+                        <input type="radio" name="r_id" value="2" />普通管理员
+                    </c:if>
+                    <c:if test="${usersA.r_id==2}">
+                        <input type="radio" name="r_id" value="1" />超级管理员
+                        <input type="radio" name="r_id" value="2" checked/>普通管理员
+                    </c:if>
+                    <c:if test="${usersA.r_id!=1 and usersA.r_id!=2}">
+                        <input type="radio" name="r_id" value="1" />超级管理员
+                        <input type="radio" name="r_id" value="2" />普通管理员
+                    </c:if>
 <%--                    <input type="radio" name="type"/>普通用户--%>
                 </div>
                 <strong style="position: relative;left: 200px;font-size: 14px">${add_msg}</strong>
